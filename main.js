@@ -2,6 +2,23 @@ import invoices from "./invoices.json" assert { type: "json" };
 import plays from "./plays.json" assert { type: "json" };
 
 function statement(invoice, plays) {
+    let totalAmount = 0;
+    let volumeCredits = 0;
+    let result = `Statement for ${invoice.customer}\n`;
+
+    for (let perf of invoice.performances) {
+        result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${
+            perf.audience
+        } seats)\n`;
+        totalAmount += amountFor(perf);
+    }
+    for (let perf of invoice.performances) {
+        volumeCredits = volumeCreditsFor(perf);
+    }
+    result += `Amount owed is ${usd(totalAmount)}\n`;
+    result += `You earned ${volumeCredits} credits\n`;
+    return result;
+
     function amountFor(aPerformance) {
         let result = 0;
         switch (playFor(aPerformance).type) {
@@ -43,20 +60,6 @@ function statement(invoice, plays) {
             minimumFractionDigits: 2,
         }).format(aNumber / 100);
     }
-
-    let totalAmount = 0;
-    let volumeCredits = 0;
-    let result = `Statement for ${invoice.customer}\n`;
-    for (let perf of invoice.performances) {
-        volumeCredits = volumeCreditsFor(perf);
-        result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${
-            perf.audience
-        } seats)\n`;
-        totalAmount += amountFor(perf);
-    }
-    result += `Amount owed is ${usd(totalAmount)}\n`;
-    result += `You earned ${volumeCredits} credits\n`;
-    return result;
 }
 
 invoices.forEach((invoice) => console.log(statement(invoice, plays)));
