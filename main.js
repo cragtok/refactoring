@@ -11,9 +11,8 @@ function statement(invoice, plays) {
         } seats)\n`;
         totalAmount += amountFor(perf);
     }
-    let volumeCredits = getTotalVolumeCredits();
     result += `Amount owed is ${usd(totalAmount)}\n`;
-    result += `You earned ${volumeCredits} credits\n`;
+    result += `You earned ${getTotalVolumeCredits()} credits\n`;
     return result;
 
     function getTotalVolumeCredits() {
