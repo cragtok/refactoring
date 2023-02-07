@@ -7,8 +7,13 @@ function statement(invoice, plays) {
     statementData.performances = invoice.performances.map(enrichPerformance);
     return renderPlainText(statementData, plays);
 
+    function playFor(aPerformance) {
+        return plays[aPerformance.playID];
+    }
+
     function enrichPerformance(aPerformance) {
         const result = Object.assign({}, aPerformance);
+        result.play = playFor(result);
         return result;
     }
 }
