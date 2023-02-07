@@ -2,25 +2,31 @@ import invoices from "./invoices.json" assert { type: "json" };
 import plays from "./plays.json" assert { type: "json" };
 
 function statement(invoice, plays) {
-    let totalAmount = 0;
     let result = `Statement for ${invoice.customer}\n`;
 
     for (let perf of invoice.performances) {
         result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${
             perf.audience
         } seats)\n`;
-        totalAmount += amountFor(perf);
     }
-    result += `Amount owed is ${usd(totalAmount)}\n`;
+    result += `Amount owed is ${usd(totalAmount())}\n`;
     result += `You earned ${getTotalVolumeCredits()} credits\n`;
     return result;
 
-    function getTotalVolumeCredits() {
-        let volumeCredits = 0;
+    function totalAmount() {
+        let result = 0;
         for (let perf of invoice.performances) {
-            volumeCredits += volumeCreditsFor(perf);
+            result += amountFor(perf);
         }
-        return volumeCredits;
+        return result;
+    }
+
+    function getTotalVolumeCredits() {
+        let result = 0;
+        for (let perf of invoice.performances) {
+            result += volumeCreditsFor(perf);
+        }
+        return result;
     }
 
     function amountFor(aPerformance) {
