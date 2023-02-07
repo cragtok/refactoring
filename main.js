@@ -1,14 +1,13 @@
 import invoices from "./invoices.json" assert { type: "json" };
 import plays from "./plays.json" assert { type: "json" };
 
-function statement(invoice, plays) {
+function createStatementData(invoice, plays) {
     const statementData = {};
     statementData.customer = invoice.customer;
     statementData.performances = invoice.performances.map(enrichPerformance);
     statementData.totalAmount = totalAmount(statementData);
     statementData.totalVolumeCredits = totalVolumeCredits(statementData);
-    return renderPlainText(statementData, plays);
-
+    return statementData;
     function totalAmount(data) {
         return data.performances.reduce((total, p) => total + p.amount, 0);
     }
@@ -60,6 +59,10 @@ function statement(invoice, plays) {
             result += Math.floor(aPerformance.audience / 5);
         return result;
     }
+}
+
+function statement(invoice, plays) {
+    return renderPlainText(createStatementData(invoice, plays));
 }
 
 function renderPlainText(data, plays) {
